@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Aprende Portugués - Mejorado</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<!-- Tipografía SN Pro -->
+<link href="https://fonts.googleapis.com/css2?family=SN+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  :root{
+    --green:#58cc02;
+    --green-dark:#46a102;
+    --red:#ef4444;
+    --red-dark:#dc2626;
+    --blue:#3b82f6;
+    --purple:#8b5cf6;
+    --pink:#ec4899;
+    --cyan:#06b6d4;
+    --gray:#4b5563;
+    --dark:#1f2937;
+    --bg:#000000;
+    --card-bg:#111111;
+    --text-primary:#f9fafb;
+    --text-secondary:#9ca3af;
+    --border-color:#222222;
+  }
+
+  * {
+    box-sizing: border-box;
+    font-family: 'SN Pro', system-ui, sans-serif;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  input, textarea {
+    -webkit-user-select: auto;
+    -moz-user-select: auto;
+    -ms-user-select: auto;
+    user-select: auto;
+  }
+
+  html, body {
+    background-color: #000000;
+    color: var(--text-primary);
+    height: 100%;
+    width: 100%;
+  }
+  body {
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* BARRA SUPERIOR CON PERFIL - FIJA */
+  .profile-bar {
+    background: rgba(0, 0, 0, 0);
+    backdrop-filter: blur(0px);
+    padding: 25px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    transition: transform 0.3s ease;
+    border-bottom: 0px solid var(--border-color);
+  }
+  .profile-bar.hidden {
+    transform: translateY(-100%);
+  }
+  .profile-info-left {
+    display: flex;
+    flex-direction: column;
+  }
+  .profile-greeting {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 2px;
+  }
+  .profile-name {
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--text-primary);
+  }
+  .profile-pic-container {
+    cursor: pointer;
+    text-decoration: none;
+    position: relative;
+    display: inline-block;
+  }
+  .profile-pic {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 800;
+    font-size: 22px;
+    position: relative;
+    object-fit: cover;
+  }
+  
+  /* Estilo para imagen de perfil */
+  .profile-pic img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+  }
+  
+  /* Badge de verificación para la foto de perfil */
+  .profile-verified-badge {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 28px;
+    height: 28px;
+    background-color: #000000;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #000000;
+    z-index: 101;
+  }
+  
+  .profile-verified-badge img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    border-radius: 0;
+  }
+
+  /* MAPA */
+  #map{
+    padding: 80px 16px 80px;
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .stage-container {
+    margin-bottom: 0px;
+    position: relative;
+  }
+  .stage{
+    text-align:center;
+    font-weight:800;
+    margin: 0 0 0px 0;
+    color: var(--text-primary);
+    font-size: 16px;
+    position: relative;
+    display: inline-block;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #111;
+    backdrop-filter: blur(80px);
+    border-radius: 30px;
+    padding: 8px 30px;
+    z-index: 2;
+    border: 0px solid var(--border-color);
+  }
+  .path{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin-top: 10px;
+  }
+  .path::before{
+    content:"";
+    position:absolute;
+    width:4px;
+    height:calc(100% - 100px);
+    background: linear-gradient(to bottom, #4b5563, #6b7280, #4b5563);
+    border-radius:10px;
+    top: 50px;
+  }
+
+  /* NIVELES CON ANIMACIÓN DE DEGRADADO MEJORADA */
+  .level{
+    width: 70px;
+    height: 70px;
+    border-radius:40%;
+    margin: 25px 0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:800;
+    font-size:22px;
+    color:white;
+    position:relative;
+    z-index:2;
+    cursor:not-allowed;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background-size: 300% 300% !important;
+    animation: gradientFlow 4s ease infinite !important;
+    /* Agregamos backdrop-filter para el blur solo en el fondo */
+    backdrop-filter: blur(90px) brightness(1);
+    -webkit-backdrop-filter: blur(90px) brightness(0.8);
+    /* Sombra para mejorar legibilidad del número */
+    /* Aseguramos que el texto sea sólido */
+  }
+  
+  .level.unlocked{
+    cursor:pointer;
+    transform: scale(1);
+  }
+  
+  .level.unlocked:hover {
+    transform: scale(1.15);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.7);
+    animation: gradientFlow 2s ease infinite !important;
+    /* El blur se mantiene en hover */
+    backdrop-filter: blur(10px) brightness(0.8);
+    -webkit-backdrop-filter: blur(10px) brightness(0.8);
+  }
+  
+  /* Degradados mejorados para cada etapa con animación */
+  .level[data-stage="1"] { 
+    background: linear-gradient(135deg, #667eea, #764ba2, #a855f7, #3b82f6, #667eea);
+  }
+  
+  .level[data-stage="2"] { 
+    background: linear-gradient(135deg, #f43f5e, #ec4899, #d946ef, #f97316, #f43f5e);
+  }
+  
+  .level[data-stage="3"] { 
+    background: linear-gradient(135deg, #10b981, #14b8a6, #06b6d4, #0891b2, #10b981);
+  }
+  
+  .level[data-stage="4"] { 
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #a855f7, #6366f1, #3b82f6);
+  }
+
+  @keyframes gradientFlow {
+    0% { background-position: 0% 0%; }
+    25% { background-position: 100% 0%; }
+    50% { background-position: 100% 100%; }
+    75% { background-position: 0% 100%; }
+    100% { background-position: 0% 0%; }
+  }
+
+  .level:not(.unlocked) {
+    background: #222 !important;
+    filter: grayscale(0.8);
+    opacity: 1;
+    font-size: 0; 
+    animation: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  
+  .level:not(.unlocked) img {
+    width: 26px;
+    height: 35px;
+    object-fit: contain;
+    opacity: 0.8;
+  }
+
+  .level.current{
+    animation: pulse-gradient 2s infinite, gradientFlow 3s ease infinite !important;
+    transform: scale(1.1);
+    border: 0px solid rgba(255,255,255,0.5);
+    box-shadow: 0 0 20px rgba(255,255,255,0.3);
+    /* El blur se mantiene en el nivel actual */
+    backdrop-filter: blur(10px) brightness(0.8);
+    -webkit-backdrop-filter: blur(10px) brightness(0.8);
+  }
+  
+  @keyframes pulse-gradient{
+    0%{ box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.6), 0 0 0 0 rgba(236, 72, 153, 0.6); }
+    70%{ box-shadow: 0 0 0 20px rgba(139, 92, 246, 0), 0 0 0 15px rgba(236, 72, 153, 0); }
+    100%{ box-shadow: 0 0 0 0 rgba(139, 92, 246, 0), 0 0 0 0 rgba(236, 72, 153, 0); }
+  }
+
+  /* DESAFÍO */
+  #challenge{
+    position:fixed;
+    inset:0;
+    background: #000;
+    padding: 20px;
+    transform:translateY(100%);
+    transition:.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    z-index:1000;
+    overflow-y:auto;
+    display: flex;
+    flex-direction: column;
+  }
+  #challenge.show{
+    transform:translateY(0);
+  }
+
+  .challenge-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    margin-bottom: 10px;
+    padding: 5px 0;
+    min-height: 50px;
+  }
+  
+  .left-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .back-to-map-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 0px solid #333;
+    color: var(--text-primary);
+    box-shadow: none;
+  }
+  .back-to-map-btn:hover {
+    background: #333;
+  }
+  .back-to-map-btn i {
+    font-size: 20px;
+    color: var(--text-primary);
+  }
+  
+  .timer-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0);
+    padding: 8px 15px;
+    border-radius: 40px;
+    border: 0px solid #333;
+  }
+  
+  .timer-container i {
+    font-size: 18px;
+    color: var(--text-secondary);
+  }
+  
+  #timer {
+    font-weight: 700;
+    font-size: 16px;
+    opacity: 80%;
+    color: var(--text-primary);
+    min-width: 45px;
+    text-align: center;
+  }
+  
+  .level-indicators {
+    display: flex;
+    margin-right: -20px;
+  }
+  
+  .stage-indicator, .level-indicator {
+    font-weight: 700;
+    font-size: 16px;
+    padding: 8px 20px;
+    color: white;
+    text-align: center;
+    min-width: 100px;
+  }
+  
+  .stage-indicator {
+    background: linear-gradient(135deg, #f43f5e, #ec4899, #d946ef);
+    border-radius: 20px 0 0 8px;
+  }
+  
+  .level-indicator {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #a855f7);
+    border-radius: 0 0px 0px 0;
+  }
+
+  .challenge-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    max-width: 500px;
+    margin: 15px auto 0;
+    width: 100%;
+  }
+  
+  .question-subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-bottom: 5px;
+    text-align: left;
+    text-transform: uppercase;
+  }
+  .question-container {
+    margin: 20px 0;
+  }
+  .question{
+    font-size: 32px;
+    font-weight:800;
+    margin-bottom: 15px;
+    text-align: left;
+    color: var(--text-primary);
+    line-height: 1.2;
+  }
+
+  /* Botón de pronunciación */
+  .speak-btn {
+    width: 160px;
+    height: 45px;
+    border-radius: 40px;
+    background: #333;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin: 0 0 30px 0;
+    padding: 0 15px;
+    transition: all 0.2s ease;
+    color: #ccc;
+    font-weight: 600;
+    font-size: 16px;
+    gap: 8px;
+    border: 1px solid #444;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .speak-btn i {
+    font-size: 18px;
+    color: #ccc;
+    transition: all 0.2s ease;
+  }
+  .speak-btn.speaking {
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    color: white;
+    border-color: transparent;
+    animation: pulse-gradient-speak 1.5s infinite;
+  }
+  .speak-btn.speaking i {
+    color: white;
+  }
+  .speak-btn.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  @keyframes pulse-gradient-speak{
+    0%{ box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.5), 0 0 0 0 rgba(236, 72, 153, 0.5); }
+    70%{ box-shadow: 0 0 0 15px rgba(139, 92, 246, 0), 0 0 0 10px rgba(236, 72, 153, 0); }
+    100%{ box-shadow: 0 0 0 0 rgba(139, 92, 246, 0), 0 0 0 0 rgba(236, 72, 153, 0); }
+  }
+
+  .options{
+    display:grid;
+    gap:12px;
+    margin: 20px 0 0;
+  }
+  .option {
+    border: 2px solid var(--border-color);
+    padding: 16px 16px 16px 20px;
+    border-radius: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #111;
+    font-size: 18px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .option:hover:not(.correct):not(.wrong) {
+    background: #222;
+    border-color: #444;
+    transform: translateY(-2px);
+  }
+  .option-letter {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    color: white;
+    flex-shrink: 0;
+    border: 1px solid #555;
+  }
+  .option-text {
+    flex: 1;
+    text-align: left;
+  }
+  .option.correct {
+    background: #0a3b1e;
+    border-color: #4ade80;
+  }
+  .option.correct .option-letter {
+    background: #166534;
+    border-color: #4ade80;
+  }
+  .option.wrong {
+    background: #3b1a1a;
+    border-color: #f87171;
+  }
+  .option.wrong .option-letter {
+    background: #7f1d1d;
+    border-color: #f87171;
+  }
+
+  /* Contenedor inferior mejorado */
+  .next-section {
+    margin-top: auto;
+    padding: 0;
+    width: 100%;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+  }
+  
+  .feedback-container {
+    border-radius: 30px 30px 0 0;
+    padding: 20px;
+    transform: translateY(100%);
+    transition: transform 0.3s ease-out;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-bottom: none;
+  }
+  
+  .feedback-container.show {
+    transform: translateY(0);
+  }
+  
+  .feedback-container.correct-bg {
+    background: rgba(74, 222, 128, 0.2);
+    backdrop-filter: blur(10px);
+  }
+  
+  .feedback-container.wrong-bg {
+    background: rgba(248, 113, 113, 0.2);
+    backdrop-filter: blur(10px);
+  }
+  
+  .feedback-message {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    min-height: 30px;
+  }
+  .feedback-message.correct-feedback {
+    color: #4ade80;
+  }
+  .feedback-message.wrong-feedback {
+    color: #f87171;
+  }
+  
+  .next-btn {
+    width: 100%;
+    padding: 18px;
+    border: none;
+    border-radius: 16px;
+    font-size: 18px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: none;
+    margin-top: 10px;
+    color: white;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .next-btn.correct-btn {
+    background: linear-gradient(135deg, var(--green), var(--green-dark));
+    box-shadow: 0 6px 20px rgba(88, 204, 2, 0.3);
+  }
+  
+  .next-btn.wrong-btn {
+    background: linear-gradient(135deg, var(--red), var(--red-dark));
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
+  }
+  
+  .next-btn:hover {
+    transform: translateY(-3px);
+  }
+  
+  .next-btn.correct-btn:hover {
+    box-shadow: 0 10px 25px rgba(88, 204, 2, 0.4);
+  }
+  
+  .next-btn.wrong-btn:hover {
+    box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4);
+  }
+
+  /* MODAL DE RESULTADOS - PANTALLA COMPLETA */
+  .result-modal {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s ease;
+  }
+  .result-modal.show {
+    opacity: 1;
+    visibility: visible;
+  }
+  .result-content {
+    background: #0a0a0a;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .result-title {
+    font-size: 48px;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 40px;
+    line-height: 1.2;
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .stats-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin: 20px 0 40px;
+    max-width: 500px;
+    width: 100%;
+  }
+  
+  .stat-box {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2));
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 30px 10px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .stat-label {
+    font-size: 16px;
+    color: #fff;
+    font-weight: 600;
+    margin-bottom: 15px;
+    order: 1;
+  }
+  
+  .stat-value {
+    font-size: 48px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    order: 2;
+    animation: countUp 1s ease-out;
+  }
+  
+  @keyframes countUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .result-actions {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  .continue-btn {
+    width: 100%;
+    padding: 18px;
+    border: none;
+    border-radius: 60px;
+    background: linear-gradient(135deg, var(--green), #46a102);
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .continue-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(88, 204, 2, 0.4);
+  }
+
+  .color-option.selected { border-color: white !important; transform: scale(1.05); }
+</style>
+</head>
+<body>
+
+<!-- Barra de perfil -->
+<div class="profile-bar" id="profileBar">
+  <div class="profile-info-left">
+    <div class="profile-greeting" id="profileGreeting">Buenos días</div>
+    <div class="profile-name" id="profileName">Usuario</div>
+  </div>
+  <a href="go:Profile" class="profile-pic-container" id="profilePicContainer">
+    <div class="profile-pic" id="profilePic">
+      <!-- La imagen se insertará aquí dinámicamente si existe -->
+    </div>
+    <!-- Badge de verificación en la foto (se inserta dinámicamente) -->
+  </a>
+</div>
+
+<div id="map"></div>
+
+<!-- Pantalla de desafío -->
+<div id="challenge">
+  <div class="challenge-header-bar">
+    <div class="left-section">
+      <div class="back-to-map-btn" id="backToMapBtn">
+        <i class="fas fa-arrow-left"></i>
+      </div>
+      <div class="timer-container">
+        <i class="fas fa-clock"></i>
+        <span id="timer">GO!</span>
+      </div>
+    </div>
+    <div class="level-indicators">
+      <div class="stage-indicator" id="stageIndicator"></div>
+      <div class="level-indicator" id="levelIndicator"></div>
+    </div>
+  </div>
+
+  <div class="challenge-content">
+    <div class="question-subtitle" id="questionSubtitle"></div>
+    <div class="question-container">
+      <div class="question" id="question"></div>
+    </div>
+    <button class="speak-btn" id="speakBtn">
+      <i class="fas fa-volume-up"></i>
+      <span>Pronunciación</span>
+    </button>
+    <div class="options" id="options"></div>
+  </div>
+
+  <div class="next-section">
+    <div class="feedback-container" id="feedbackContainer">
+      <div class="feedback-message" id="feedbackMessage"></div>
+      <button class="next-btn" id="nextBtn">Siguiente</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de resultados a pantalla completa -->
+<div class="result-modal" id="resultModal">
+  <div class="result-content">
+    <div class="stats-container">
+      <div class="stat-box">
+        <div class="stat-label">Puntuación</div>
+        <div class="stat-value" id="scoreValue">100%</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Tiempo</div>
+        <div class="stat-value" id="timeValue">0s</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Errores</div>
+        <div class="stat-value" id="mista
+kesValue">0</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Precisión</div>
+        <div class="stat-value" id="accuracyValue">100%</div>
+      </div>
+    </div>
+    <div class="result-actions">
+      <button class="continue-btn" id="continueBtn">Continuar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const TOTAL_LEVELS = 3;
+const LEVELS_PER_STAGE = 3;
+const VERIFIED_ICON_URL = "https://i.postimg.cc/XJ2T5q3r/IMG-4795.png";
+
+const lessons = {
+1:[
+{q:"Hola",a:"Olá",o:["Olá","Tchau","Obrigado"],subtitle:"Saludo básico"},
+{q:"Buenos días",a:"Bom dia",o:["Boa tarde","Bom dia","Boa noite"],subtitle:"Saludo"},
+{q:"Buenas tardes",a:"Boa tarde",o:["Boa tarde","Bom dia","Tchau"],subtitle:"Saludo"},
+{q:"Buenas noches",a:"Boa noite",o:["Boa noite","Olá","Bom dia"],subtitle:"Saludo"},
+{q:"Adiós",a:"Tchau",o:["Olá","Tchau","Até"],subtitle:"Despedida"},
+
+{q:"Gracias",a:"Obrigado",o:["Por favor","Obrigado","Desculpa"],subtitle:"Cortesía"},
+{q:"Por favor",a:"Por favor",o:["Obrigado","Por favor","Oi"],subtitle:"Cortesía"},
+{q:"Disculpa",a:"Desculpa",o:["Licença","Desculpa","Obrigado"],subtitle:"Cortesía"},
+
+{q:"Sí",a:"Sim",o:["Sim","Não","Talvez"],subtitle:"Respuesta"},
+{q:"No",a:"Não",o:["Sim","Não","Oi"],subtitle:"Negación"},
+
+{q:"Yo",a:"Eu",o:["Eu","Você","Nós"],subtitle:"Pronombres"},
+{q:"Tú",a:"Você",o:["Eu","Você","Eles"],subtitle:"Pronombres"},
+{q:"Nosotros",a:"Nós",o:["Eles","Nós","Eu"],subtitle:"Pronombres"},
+
+{q:"Esto es",a:"Isto é",o:["Isto é","Isto foi","Isto tem"],subtitle:"Primera estructura"},
+{q:"Es",a:"É",o:["Tem","É","Foi"],subtitle:"Verbo ser básico"},
+
+{q:"Casa",a:"Casa",o:["Casa","Rua","Escola"],subtitle:"Vocabulario"},
+{q:"Escuela",a:"Escola",o:["Cidade","Escola","Amigo"],subtitle:"Vocabulario"},
+{q:"Calle",a:"Rua",o:["Rua","Casa","Carro"],subtitle:"Vocabulario"},
+{q:"Ciudad",a:"Cidade",o:["Cidade","País","Rua"],subtitle:"Vocabulario"},
+
+{q:"Amigo",a:"Amigo",o:["Amigo","Tempo","Dia"],subtitle:"Personas"},
+{q:"Mujer",a:"Mulher",o:["Homem","Mulher","Pessoa"],subtitle:"Personas"},
+{q:"Hombre",a:"Homem",o:["Homem","Mulher","Amigo"],subtitle:"Personas"},
+
+{q:"Agua",a:"Água",o:["Leite","Água","Suco"],subtitle:"Comida"},
+{q:"Pan",a:"Pão",o:["Pão","Carne","Arroz"],subtitle:"Comida"},
+{q:"Leche",a:"Leite",o:["Leite","Água","Café"],subtitle:"Comida"},
+{q:"Café",a:"Café",o:["Café","Chá","Suco"],subtitle:"Comida"},
+
+{q:"Un café",a:"Um café",o:["Uma café","Um café","O café"],subtitle:"Artículos"},
+{q:"Una casa",a:"Uma casa",o:["Um casa","Uma casa","A casa"],subtitle:"Artículos"},
+
+{q:"La casa",a:"A casa",o:["O casa","A casa","Uma casa"],subtitle:"Artículos definidos"},
+{q:"El café",a:"O café",o:["A café","O café","Um café"],subtitle:"Artículos definidos"},
+
+{q:"Mi casa",a:"Minha casa",o:["Minha casa","Me casa","Meu casa"],subtitle:"Posesivos"},
+{q:"Mi amigo",a:"Meu amigo",o:["Minha amigo","Meu amigo","Me amigo"],subtitle:"Posesivos"},
+
+{q:"Sí, gracias",a:"Sim, obrigado",o:["Sim, obrigado","Não, obrigado","Por favor"],subtitle:"Frases"},
+{q:"No, gracias",a:"Não, obrigado",o:["Não, obrigado","Sim, por favor","Olá"],subtitle:"Frases"},
+
+{q:"Quiero agua",a:"Quero água",o:["Quero água","Tenho água","Vou água"],subtitle:"Primer verbo"},
+{q:"Quiero café",a:"Quero café",o:["Quero café","Sou café","Faço café"],subtitle:"Verbo querer"},
+
+{q:"Tengo",a:"Tenho",o:["Tenho","Sou","Vou"],subtitle:"Verbo tener"},
+{q:"Tengo pan",a:"Tenho pão",o:["Tenho pão","Sou pão","Vou pão"],subtitle:"Frase"},
+
+{q:"Aquí",a:"Aqui",o:["Aqui","Ali","Lá"],subtitle:"Ubicación"},
+{q:"Allí",a:"Ali",o:["Aqui","Ali","Bem"],subtitle:"Ubicación"},
+
+{q:"¿Qué?",a:"O que?",o:["Quem?","O que?","Onde?"],subtitle:"Pregunta"},
+{q:"¿Dónde?",a:"Onde?",o:["Quando?","Onde?","O que?"],subtitle:"Pregunta"},
+
+{q:"Estoy aquí",a:"Estou aqui",o:["Estou aqui","Sou aqui","Tenho aqui"],subtitle:"Primera oración"},
+{q:"Es mi casa",a:"É minha casa",o:["É minha casa","Tenho minha casa","Sou minha casa"],subtitle:"Oración"},
+
+{q:"Hola, amigo",a:"Olá, amigo",o:["Tchau, amigo","Olá, amigo","Obrigado, amigo"],subtitle:"Comunicación"},
+{q:"Gracias, amigo",a:"Obrigado, amigo",o:["Por favor, amigo","Obrigado, amigo","Olá, amigo"],subtitle:"Comunicación"}
+],
+2:[
+{q:"Comer",a:"Comer",o:["Beber","Comer","Morar"],subtitle:"Verbos"},
+{q:"Beber",a:"Beber",o:["Beber","Comer","Falar"],subtitle:"Verbos"},
+{q:"Vivir",a:"Morar",o:["Morar","Ser","Ter"],subtitle:"Verbos"},
+
+{q:"Yo como",a:"Eu como",o:["Eu como","Eu bebo","Eu moro"],subtitle:"Presente"},
+{q:"Yo bebo",a:"Eu bebo",o:["Eu bebo","Eu como","Eu vou"],subtitle:"Presente"},
+{q:"Yo vivo",a:"Eu moro",o:["Eu moro","Eu tenho","Eu sou"],subtitle:"Presente"},
+
+{q:"¿Dónde vives?",a:"Onde você mora?",o:["Onde você mora?","Onde você come?","Onde você vai?"],subtitle:"Pregunta real"},
+{q:"Vivo aquí",a:"Moro aqui",o:["Moro aqui","Como aqui","Sou aqui"],subtitle:"Respuesta"},
+
+{q:"Uno",a:"Um",o:["Um","Dois","Três"],subtitle:"Números"},
+{q:"Dos",a:"Dois",o:["Dois","Quatro","Cinco"],subtitle:"Números"},
+{q:"Tres",a:"Três",o:["Três","Seis","Sete"],subtitle:"Números"},
+{q:"Cuatro",a:"Quatro",o:["Quatro","Cinco","Oito"],subtitle:"Números"},
+{q:"Cinco",a:"Cinco",o:["Cinco","Seis","Dez"],subtitle:"Números"},
+
+{q:"Grande",a:"Grande",o:["Grande","Pequeno","Novo"],subtitle:"Adjetivos"},
+{q:"Pequeño",a:"Pequeno",o:["Pequeno","Grande","Velho"],subtitle:"Adjetivos"},
+{q:"Nuevo",a:"Novo",o:["Novo","Velho","Bom"],subtitle:"Adjetivos"},
+{q:"Bueno",a:"Bom",o:["Bom","Ruim","Novo"],subtitle:"Adjetivos"},
+{q:"Malo",a:"Ruim",o:["Ruim","Bom","Velho"],subtitle:"Adjetivos"},
+
+{q:"La casa es grande",a:"A casa é grande",o:["A casa é grande","A casa tem grande","A casa está grande"],subtitle:"Estructura"},
+
+{q:"Trabajo",a:"Trabalho",o:["Trabalho","Estudo","Viajo"],subtitle:"Rutina"},
+{q:"Estudio",a:"Estudo",o:["Estudo","Trabalho","Moro"],subtitle:"Rutina"},
+{q:"Hoy trabajo",a:"Hoje trabalho",o:["Hoje trabalho","Hoje moro","Hoje como"],subtitle:"Tiempo presente"},
+
+{q:"Hoy",a:"Hoje",o:["Hoje","Ontem","Amanhã"],subtitle:"Tiempo"},
+{q:"Mañana",a:"Amanhã",o:["Hoje","Amanhã","Ontem"],subtitle:"Tiempo"},
+{q:"Ayer",a:"Ontem",o:["Amanhã","Ontem","Hoje"],subtitle:"Tiempo"},
+
+{q:"¿Qué comes?",a:"O que você come?",o:["O que você come?","Onde você come?","Quem você come?"],subtitle:"Pregunta"},
+
+{q:"Como pan",a:"Como pão",o:["Como pão","Bebo pão","Moro pão"],subtitle:"Respuesta"},
+
+{q:"Con",a:"Com",o:["Com","Sem","Para"],subtitle:"Preposiciones"},
+{q:"Sin",a:"Sem",o:["Sem","Com","De"],subtitle:"Preposiciones"},
+{q:"Para",a:"Para",o:["Para","Com","Sem"],subtitle:"Preposiciones"},
+
+{q:"Café con leche",a:"Café com leite",o:["Café com leite","Café sem leite","Café para leite"],subtitle:"Frase"},
+
+{q:"Me gusta",a:"Gosto",o:["Gosto","Tenho","Sou"],subtitle:"Expresión"},
+{q:"Me gusta café",a:"Gosto de café",o:["Gosto de café","Gosto café","Tenho café"],subtitle:"Estructura correcta"},
+
+{q:"Hablar",a:"Falar",o:["Falar","Comer","Beber"],subtitle:"Verbos"},
+{q:"Hablo portugués",a:"Falo português",o:["Falo português","Falo portuguêses","Sou português"],subtitle:"Comunicación"}
+],
+3:[
+{q:"Fui",a:"Fui",o:["Fui","Vou","Era"],subtitle:"Pasado"},
+{q:"Comí",a:"Comi",o:["Comi","Como","Comerei"],subtitle:"Pasado"},
+{q:"Bebí",a:"Bebi",o:["Bebi","Bebo","Beberei"],subtitle:"Pasado"},
+
+{q:"Ayer comí pan",a:"Ontem comi pão",o:["Ontem comi pão","Hoje como pão","Amanhã comi pão"],subtitle:"Pasado real"},
+
+{q:"Voy a ir",a:"Vou ir",o:["Vou ir","Fui","Ia"],subtitle:"Futuro"},
+{q:"Voy a comer",a:"Vou comer",o:["Vou comer","Comi","Como"],subtitle:"Futuro práctico"},
+
+{q:"Ahora",a:"Agora",o:["Agora","Depois","Antes"],subtitle:"Tiempo"},
+{q:"Después",a:"Depois",o:["Depois","Agora","Nunca"],subtitle:"Tiempo"},
+{q:"Siempre",a:"Sempre",o:["Sempre","Nunca","Agora"],subtitle:"Frecuencia"},
+{q:"Nunca",a:"Nunca",o:["Sempre","Nunca","Depois"],subtitle:"Frecuencia"},
+
+{q:"Quiero aprender",a:"Quero aprender",o:["Quero aprender","Tenho aprender","Sou aprender"],subtitle:"Comunicación"},
+
+{q:"Estoy aprendiendo",a:"Estou aprendendo",o:["Estou aprendendo","Sou aprendendo","Tenho aprendendo"],subtitle:"Acción en progreso"},
+
+{q:"Porque",a:"Porque",o:["Porque","Mas","Então"],subtitle:"Conectores"},
+{q:"Pero",a:"Mas",o:["Mas","Porque","Então"],subtitle:"Conectores"},
+{q:"Entonces",a:"Então",o:["Então","Mas","Porque"],subtitle:"Conectores"},
+
+{q:"Quiero aprender porque es importante",
+a:"Quero aprender porque é importante",
+o:[
+"Quero aprender porque é importante",
+"Quero aprender mas é importante",
+"Quero aprender então é importante"
+],
+subtitle:"Oración compleja"},
+
+{q:"¿Puedes ayudarme?",a:"Pode me ajudar?",o:["Pode me ajudar?","Pode ajudar eu?","Ajuda pode me?"],subtitle:"Conversación real"},
+
+{q:"Claro",a:"Claro",o:["Claro","Nunca","Talvez"],subtitle:"Respuesta natural"},
+{q:"Tal vez",a:"Talvez",o:["Talvez","Sempre","Claro"],subtitle:"Respuesta natural"},
+
+{q:"Necesito agua",a:"Preciso de água",o:["Preciso de água","Quero água","Sou água"],subtitle:"Necesidades"},
+{q:"Necesito ayuda",a:"Preciso de ajuda",o:["Preciso de ajuda","Tenho ajuda","Vou ajuda"],subtitle:"Necesidades"},
+
+{q:"Vamos",a:"Vamos",o:["Vamos","Fomos","Iremos"],subtitle:"Invitación"},
+{q:"Vamos a comer",a:"Vamos comer",o:["Vamos comer","Vamos comemos","Vamos comi"],subtitle:"Conversación"},
+
+{q:"¿Dónde está el baño?",a:"Onde fica o banheiro?",o:["Onde fica o banheiro?","Onde é banheiro?","Onde banheiro?"],subtitle:"Situación real"},
+
+{q:"Está allí",a:"Fica ali",o:["Fica ali","É ali","Tem ali"],subtitle:"Respuesta natural"},
+
+{q:"Hoy trabajo mucho",a:"Hoje trabalho muito",o:["Hoje trabalho muito","Hoje muito trabalho","Trabalho hoje muito"],subtitle:"Fluidez"},
+
+{q:"Estoy cansado",a:"Estou cansado",o:["Estou cansado","Sou cansado","Tenho cansado"],subtitle:"Estado físico"},
+
+{q:"Nos vemos luego",a:"Até depois",o:["Até depois","Olá depois","Tchau agora"],subtitle:"Despedida natural"}
+]
+};
+
+/* SISTEMA DE PERFILES */
+const PROFILES_KEY = "pt_profiles";
+const ACTIVE_PROFILE_KEY = "pt_active_profile";
+const VERIFIED_KEY = "pt_verified";
+let profiles = JSON.parse(localStorage.getItem(PROFILES_KEY)) || [];
+let activeProfileId = localStorage.getItem(ACTIVE_PROFILE_KEY) || null;
+let isVerified = localStorage.getItem(VERIFIED_KEY) === 'true';
+let progress = { current: 1 };
+let activeLevel = null;
+let lessonIndex = 0;
+let mistakesCount = 0;
+let levelStartTime = null;
+let totalLessonsInLevel = 0;
+let selectedOption = false;
+let timerInterval = null;
+
+const map = document.getElementById("map");
+const challenge = document.getElementById("challenge");
+const question = document.getElementById("question");
+const questionSubtitle = document.getElementById("questionSubtitle");
+const options = document.getElementById("options");
+const stageIndicator = document.getElementById("stageIndicator");
+const levelIndicator = document.getElementById("levelIndicator");
+const timer = document.getElementById("timer");
+const nextBtn = document.getElementById("nextBtn");
+const profilePic = document.getElementById("profilePic");
+const profileName = document.getElementById("profileName");
+const profileGreeting = document.getElementById("profileGreeting");
+const profileBar = document.getElementById("profileBar");
+const profilePicContainer = document.getElementById("profilePicContainer");
+const resultModal = document.getElementById("resultModal");
+const speakBtn = document.getElementById("speakBtn");
+const feedbackMessage = document.getElementById("feedbackMessage");
+const feedbackContainer = document.getElementById("feedbackContainer");
+const backToMapBtn = document.getElementById("backToMapBtn");
+const continueBtn = document.getElementById("continueBtn");
+
+function updateGreeting() {
+  const hour = new Date().getHours();
+  profileGreeting.textContent = hour >= 5 && hour < 12 ? "BUENOS DÍAS" : hour >= 12 && hour < 19 ? "BUENAS TARDES" : "BUENAS NOCHES";
+}
+
+function initProfile() {
+  if (profiles.length === 0) {
+    profiles.push({ id: 'default', name: 'Usuario', color: '#8b5cf6', image: null, createdAt: new Date().toISOString(), progress: { current: 1 } });
+    activeProfileId = 'default';
+    saveProfiles();
+  }
+  const activeProfile = profiles.find(p => p.id === activeProfileId) || profiles[0];
+  activeProfileId = activeProfile.id;
+  progress = activeProfile.progress || { current: 1 };
+  updateProfileUI(activeProfile);
+  updateGreeting();
+}
+
+function updateProfileUI(profile) {
+  // Limpiar badge de verificación existente
+  const existingBadge = profilePicContainer.querySelector('.profile-verified-badge');
+  if (existingBadge) existingBadge.remove();
+  
+  // Limpiar contenido de profilePic
+  profilePic.innerHTML = '';
+  
+  // Actualizar nombre
+  profileName.textContent = profile.name;
+  
+  // Cargar imagen de perfil si existe
+  if (profile.image) {
+    const img = document.createElement('img');
+    img.src = profile.image;
+    img.alt = profile.name;
+    profilePic.appendChild(img);
+  } else {
+    // Si no hay imagen, mostrar inicial con color de fondo
+    profilePic.textContent = profile.name.charAt(0).toUpperCase();
+    profilePic.style.background = profile.color;
+  }
+  
+  // Añadir badge de verificación en la foto SOLO si está verificado
+  if (isVerified) {
+    const badgeContainer = document.createElement('div');
+    badgeContainer.className = 'profile-verified-badge';
+    
+    const badgeImg = document.createElement('img');
+    badgeImg.src = VERIFIED_ICON_URL;
+    badgeImg.alt = "Verificado";
+    
+    badgeContainer.appendChild(badgeImg);
+    profilePicContainer.appendChild(badgeContainer);
+  }
+}
+
+function saveProfiles() {
+  localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
+  localStorage.setItem(ACTIVE_PROFILE_KEY, activeProfileId);
+}
+
+function saveProfileProgress() {
+  const profile = profiles.find(p => p.id === activeProfileId);
+  if (profile) { profile.progress = progress; saveProfiles(); }
+}
+
+/* MAPA */
+function renderMap(){
+  map.innerHTML="";
+  for(let stage=0; stage<TOTAL_LEVELS/LEVELS_PER_STAGE; stage++){
+    const stageContainer = document.createElement("div"); stageContainer.className = "stage-container";
+    const stageTitle = document.createElement("div"); stageTitle.className = "stage"; stageTitle.textContent = `Etapa ${stage+1}`;
+    const path = document.createElement("div"); path.className = "path";
+    stageContainer.appendChild(stageTitle); stageContainer.appendChild(path); map.appendChild(stageContainer);
+    for(let i=1; i<=LEVELS_PER_STAGE; i++){
+      const lvl = stage*LEVELS_PER_STAGE + i; if(lvl > TOTAL_LEVELS) break;
+      const div = document.createElement("div"); div.className = "level";
+      
+      if(lvl <= progress.current) {
+        div.textContent = lvl;
+        div.classList.add("unlocked");
+        if(lvl < progress.current) div.classList.add("completed");
+        else if(lvl === progress.current) div.classList.add("current");
+        
+        div.onclick = function(e) {
+          e.preventDefault();
+          startLevel(lvl);
+          return false;
+        };
+        
+      } else {
+        const img = document.createElement('img');
+        img.src = 'https://i.ibb.co/wZNQ69Dv/IMG-2505.png';
+        img.alt = 'bloqueado';
+        div.appendChild(img);
+        div.classList.remove("unlocked", "current", "completed");
+      }
+      div.setAttribute("data-stage", ((stage) % 4) + 1);
+      path.appendChild(div);
+    }
+  }
+}
+
+function startLevel(lvl){
+  if(!lessons[lvl]) return;
+  activeLevel = lvl; 
+  lessonIndex = 0; 
+  mistakesCount = 0; 
+  totalLessonsInLevel = lessons[lvl].length; 
+  levelStartTime = Date.now();
+  const stageNumber = Math.ceil(lvl / LEVELS_PER_STAGE); 
+  const levelNumber = ((lvl - 1) % LEVELS_PER_STAGE) + 1;
+  stageIndicator.textContent = `Etapa ${stageNumber}`;
+  levelIndicator.textContent = `Nivel ${levelNumber}`;
+  
+  if(timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(updateTimer, 1000);
+  
+  profileBar.classList.add("hidden");
+  feedbackMessage.textContent = '';
+  feedbackContainer.classList.remove('show', 'correct-bg', 'wrong-bg');
+  challenge.classList.add("show");
+  loadLesson();
+}
+
+function updateTimer() {
+  if(levelStartTime) {
+    const elapsed = Math.floor((Date.now() - levelStartTime) / 1000);
+    timer.textContent = `${elapsed} S`;
+  }
+}
+
+function loadLesson(){
+  const lesson = lessons[activeLevel][lessonIndex];
+  question.textContent = lesson.q;
+  questionSubtitle.textContent = lesson.subtitle || ''; 
+  questionSubtitle.style.display = lesson.subtitle ? "block" : "none";
+  options.innerHTML = ""; 
+  nextBtn.style.display = "none"; 
+  feedbackMessage.textContent = '';
+  feedbackContainer.classList.remove('show', 'correct-bg', 'wrong-bg');
+  selectedOption = false;
+  
+  speakBtn.classList.remove('disabled');
+  
+  const shuffledOptions = [...lesson.o].sort(() => Math.random() - 0.5);
+  shuffledOptions.forEach((opt, index) => {
+    const d = document.createElement("div"); d.className = "option";
+    const letterSpan = document.createElement("span"); letterSpan.className = "option-letter";
+    letterSpan.textContent = String.fromCharCode(65 + index);
+    const textSpan = document.createElement("span"); textSpan.className = "option-text"; textSpan.textContent = opt;
+    d.appendChild(letterSpan); d.appendChild(textSpan);
+    
+    d.onclick = function(e) {
+      e.preventDefault();
+      if (!selectedOption) {
+        check(opt, d, lesson.a);
+      }
+      return false;
+    };
+    
+    options.appendChild(d);
+  });
+}
+
+function speakText(text) {
+  if (!window.speechSynthesis) return;
+  
+  try {
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+    }
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "pt-BR";
+    utterance.rate = 0.9;
+    
+    const voices = window.speechSynthesis.getVoices();
+    const brazilianVoice = voices.find(voice => voice.lang.includes('pt-BR') || voice.lang.includes('pt'));
+    if (brazilianVoice) {
+      utterance.voice = brazilianVoice;
+    }
+    
+    window.speechSynthesis.speak(utterance);
+    
+  } catch (e) {
+    console.log('Error al hablar:', e);
+  }
+}
+
+function check(val, div, correct){
+  if (selectedOption) return;
+  selectedOption = true;
+  const allOptions = document.querySelectorAll('.option');
+  allOptions.forEach(opt => opt.style.pointerEvents = 'none');
+  
+  speakBtn.classList.add('disabled');
+  
+  speakText(val);
+  
+  const isCorrect = (val === correct);
+  
+  if(isCorrect){
+    div.classList.add("correct");
+    feedbackMessage.textContent = "¡Correcto!";
+    feedbackMessage.className = "feedback-message correct-feedback";
+    feedbackContainer.classList.add('correct-bg');
+    nextBtn.classList.remove('wrong-btn');
+    nextBtn.classList.add('correct-btn');
+  } else {
+    mistakesCount++;
+    div.classList.add("wrong");
+    feedbackMessage.textContent = "Incorrecto";
+    feedbackMessage.className = "feedback-message wrong-feedback";
+    feedbackContainer.classList.add('wrong-bg');
+    nextBtn.classList.remove('correct-btn');
+    nextBtn.classList.add('wrong-btn');
+  }
+  
+  feedbackContainer.classList.add('show');
+  
+  setTimeout(() => {
+    lessonIndex++;
+    if(lessonIndex < lessons[activeLevel].length){
+      nextBtn.style.display = "block";
+    } else {
+      nextBtn.style.display = "none";
+      showResults();
+    }
+  }, 1000);
+}
+
+function showResults() {
+  if(timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  
+  const timeSpent = Math.floor((Date.now() - levelStartTime) / 1000);
+  const accuracy = Math.max(0, 100 - (mistakesCount / totalLessonsInLevel) * 100);
+  const score = Math.max(0, Math.floor(accuracy * 0.7 + (100 - Math.min(timeSpent, 60)) * 0.3));
+  
+  document.getElementById("scoreValue").textContent = `${score}%`;
+  document.getElementById("timeValue").textContent = `${timeSpent}s`;
+  document.getElementById("mistakesValue").textContent = mistakesCount;
+  document.getElementById("accuracyValue").textContent = `${Math.round(accuracy)}%`;
+  
+  setTimeout(() => { resultModal.classList.add("show"); }, 500);
+}
+
+function continueAfterResult() {
+  resultModal.classList.remove("show");
+  if(activeLevel === progress.current){ 
+    progress.current++; 
+    saveProfileProgress(); 
+  }
+  closeChallenge();
+}
+
+function nextLesson(){ 
+  selectedOption = false; 
+  feedbackContainer.classList.remove('show', 'correct-bg', 'wrong-bg');
+  speakBtn.classList.remove('disabled');
+  loadLesson(); 
+}
+
+function closeChallenge(){
+  if(timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  challenge.classList.remove("show"); 
+  profileBar.classList.remove("hidden");
+  selectedOption = false; 
+  feedbackMessage.textContent = '';
+  feedbackContainer.classList.remove('show', 'correct-bg', 'wrong-bg');
+  speakBtn.classList.remove('disabled');
+  setTimeout(() => { renderMap(); }, 300);
+}
+
+function speak(){
+  if(activeLevel && lessons[activeLevel] && lessons[activeLevel][lessonIndex] && !speakBtn.classList.contains('disabled')){
+    speakBtn.classList.add('speaking');
+    speakText(lessons[activeLevel][lessonIndex].a);
+    setTimeout(() => {
+      speakBtn.classList.remove('speaking');
+    }, 1000);
+  }
+}
+
+function initSpeechSynthesis() {
+  if (window.speechSynthesis) {
+    try {
+      window.speechSynthesis.getVoices();
+    } catch (e) {}
+  }
+}
+
+initProfile(); 
+renderMap();
+setInterval(updateGreeting, 3600000);
+
+backToMapBtn.onclick = function(e) {
+  e.preventDefault();
+  closeChallenge();
+  return false;
+};
+
+continueBtn.onclick = function(e) {
+  e.preventDefault();
+  continueAfterResult();
+  return false;
+};
+
+speakBtn.onclick = function(e) {
+  e.preventDefault();
+  speak();
+  return false;
+};
+
+nextBtn.onclick = function(e) {
+  e.preventDefault();
+  nextLesson();
+  return false;
+};
+
+document.addEventListener('touchstart', (e) => {
+  if (e.touches.length > 1) {
+    e.preventDefault();
+  }
+}, { passive: false });
+
+document.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+});
+
+document.addEventListener('touchstart', function initSpeech() {
+  initSpeechSynthesis();
+  document.removeEventListener('touchstart', initSpeech);
+}, { once: true });
+
+document.addEventListener('click', function initSpeech() {
+  initSpeechSynthesis();
+  document.removeEventListener('click', initSpeech);
+}, { once: true });
+
+if (window.speechSynthesis) {
+  window.speechSynthesis.onvoiceschanged = function() {};
+}
+</script>
+</body>
+</html>
